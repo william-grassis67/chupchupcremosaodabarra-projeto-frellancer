@@ -2,8 +2,8 @@
    CONFIG — configurações globais da aplicação
    ========================================================= */
 
-// Altere aqui caso o backend esteja em outro host/porta.
-const API_URL = "http://localhost:3000/api";
+// Usa o mesmo domínio do frontend; o Nginx encaminha /api para o backend.
+const API_URL = "/api";
 
 // Número da loja no formato internacional, sem símbolos.
 const WHATSAPP_NUMBER = "5527997765557";

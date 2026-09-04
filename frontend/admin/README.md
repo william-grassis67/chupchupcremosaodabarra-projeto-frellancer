@@ -12,7 +12,7 @@ python3 -m http.server 5500
 - Loja: `http://localhost:5500/`
 - Administração: `http://localhost:5500/admin/`
 
-O backend deve estar em `http://localhost:3000`. A URL fica centralizada em `js/config.js`.
+Em produção, o Nginx deve encaminhar `/api/*` para o backend Node.js. A URL fica centralizada em `js/config.js`.
 
 ## Estrutura
 

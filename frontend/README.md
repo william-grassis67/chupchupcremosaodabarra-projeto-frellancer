@@ -61,7 +61,7 @@ frontend/
 
 Este é um frontend estático — não precisa de build nem de `npm install`.
 
-1. Suba o backend em `http://localhost:3000` (endpoints em `/api/*`).
+1. Em produção, o Nginx deve encaminhar `/api/*` para o backend Node.js.
 2. Sirva a pasta `frontend/` com qualquer servidor estático, por exemplo:
 
    ```bash
@@ -81,7 +81,7 @@ Hospedagens estáticas que seguem a convenção `404.html` (incluindo o comando 
 A URL base da API fica centralizada em `js/config.js`:
 
 ```javascript
-const API_URL = "http://localhost:3000/api";
+const API_URL = "/api";
 ```
 
 Altere esse valor caso o backend esteja rodando em outro host, porta ou domínio (ex.: ambiente de homologação/produção).
