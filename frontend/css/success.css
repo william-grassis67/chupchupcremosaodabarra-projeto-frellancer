@@ -1,0 +1,66 @@
+/* =========================================================
+   SUCESSO DO PEDIDO
+   ========================================================= */
+.success-page {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--color-primary);
+  padding: var(--space-5);
+}
+
+.success-card {
+  background: var(--color-bg);
+  border-radius: var(--radius-lg);
+  padding: var(--space-8) var(--space-6);
+  max-width: 460px;
+  width: 100%;
+  text-align: center;
+  box-shadow: var(--shadow-lg);
+}
+
+.success-seal {
+  width: 96px;
+  height: 96px;
+  margin: 0 auto var(--space-5);
+  border-radius: 50%;
+  background: var(--color-accent);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.success-seal svg {
+  width: 48px;
+  height: 48px;
+  color: var(--color-deep);
+}
+
+.success-card h1 {
+  font-size: var(--fs-xl);
+  margin-bottom: var(--space-3);
+}
+
+.success-card p {
+  color: var(--color-text-muted);
+  margin-bottom: var(--space-2);
+  line-height: var(--lh-relaxed);
+}
+
+.order-number {
+  display: inline-block;
+  margin-block: var(--space-4);
+  padding: var(--space-3) var(--space-6);
+  background: var(--color-surface-cream);
+  border: 1.5px dashed var(--color-border-strong);
+  border-radius: var(--radius-md);
+  font-family: var(--font-display);
+  font-size: var(--fs-lg);
+  font-weight: 700;
+  color: var(--color-primary);
+}
+
+.success-card .btn {
+  margin-top: var(--space-5);
+}

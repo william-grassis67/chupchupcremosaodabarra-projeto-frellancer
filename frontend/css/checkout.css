@@ -1,0 +1,115 @@
+/* =========================================================
+   CHECKOUT
+   ========================================================= */
+.checkout-header {
+  background: var(--color-primary);
+  color: var(--color-text-inverse);
+  padding-block: var(--space-5);
+}
+
+.checkout-header .container {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+}
+
+.back-link {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-weight: 700;
+  color: var(--color-text-inverse);
+  font-size: var(--fs-sm);
+}
+
+.back-link svg {
+  width: 18px;
+  height: 18px;
+}
+
+.checkout-header h1 {
+  color: var(--color-text-inverse);
+  font-size: var(--fs-lg);
+}
+
+.checkout-layout {
+  display: grid;
+  grid-template-columns: 1.3fr 1fr;
+  gap: var(--space-7);
+  align-items: start;
+  padding-block: var(--space-7);
+}
+
+.checkout-summary {
+  position: sticky;
+  top: calc(var(--header-height) + var(--space-5));
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: var(--space-5);
+}
+
+.checkout-summary h2 {
+  font-size: var(--fs-md);
+  margin-bottom: var(--space-4);
+}
+
+.summary-item {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--space-3);
+  font-size: var(--fs-sm);
+  padding-block: var(--space-2);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.summary-item .summary-item-name {
+  color: var(--color-text);
+  font-weight: 600;
+}
+
+.summary-item .summary-item-qty {
+  color: var(--color-text-muted);
+}
+
+.payment-options {
+  display: flex;
+  flex-direction: column;
+}
+
+.textarea-obs {
+  min-height: 90px;
+  resize: vertical;
+}
+
+.submit-error {
+  background: var(--color-danger-bg);
+  color: var(--color-danger);
+  border-radius: var(--radius-sm);
+  padding: var(--space-3) var(--space-4);
+  font-size: var(--fs-sm);
+  margin-bottom: var(--space-4);
+  display: none;
+}
+
+.submit-error.is-visible {
+  display: block;
+}
+
+.checkout-empty-notice {
+  text-align: center;
+  padding: var(--space-8) var(--space-4);
+}
+
+@media (max-width: 900px) {
+  .checkout-layout {
+    grid-template-columns: 1fr;
+  }
+  .checkout-summary {
+    position: static;
+    order: -1;
+  }
+  .field-row {
+    grid-template-columns: 1fr;
+  }
+}

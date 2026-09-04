@@ -1,0 +1,83 @@
+/* =========================================================
+   CHUP CHUP GOURMET — Design Tokens
+   Paleta extraída do selo/logo: dourado quente + bordô + creme
+   ========================================================= */
+:root {
+  /* ---------- Cor ---------- */
+  --color-bg: #fffaf0;
+  --color-surface: #ffffff;
+  --color-surface-cream: #fff3d6;
+
+  --color-primary: #a70c12;       /* bordô do selo */
+  --color-primary-dark: #7a0a0d;
+  --color-primary-darker: #58080b;
+
+  --color-accent: #ffcf3d;        /* dourado do selo */
+  --color-accent-dark: #f0b400;
+
+  --color-deep: #3d0a02;          /* marrom-chocolate profundo (redemoinho) */
+
+  --color-text: #2b1810;
+  --color-text-muted: #7a6a5c;
+  --color-text-inverse: #fff6e3;
+
+  --color-border: #ecdfc4;
+  --color-border-strong: #d8c197;
+
+  --color-success: #2f8f4e;
+  --color-danger: #c62828;
+  --color-danger-bg: #fdecec;
+
+  --color-overlay: rgba(43, 24, 16, 0.55);
+
+  /* ---------- Tipografia ---------- */
+  --font-display: "Fraunces", "Iowan Old Style", Georgia, serif;
+  --font-body: "Manrope", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+
+  --fs-xs: 0.75rem;
+  --fs-sm: 0.875rem;
+  --fs-base: 1rem;
+  --fs-md: 1.125rem;
+  --fs-lg: 1.375rem;
+  --fs-xl: 1.75rem;
+  --fs-2xl: 2.25rem;
+  --fs-3xl: 3rem;
+
+  --lh-tight: 1.15;
+  --lh-normal: 1.5;
+  --lh-relaxed: 1.7;
+
+  /* ---------- Espaçamento ---------- */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 24px;
+  --space-6: 32px;
+  --space-7: 48px;
+  --space-8: 64px;
+  --space-9: 96px;
+
+  /* ---------- Borda / raio ---------- */
+  --radius-sm: 6px;
+  --radius-md: 12px;
+  --radius-lg: 20px;
+  --radius-pill: 999px;
+  --radius-seal: 50%;
+
+  /* ---------- Sombra ---------- */
+  --shadow-sm: 0 1px 2px rgba(61, 10, 2, 0.08);
+  --shadow-md: 0 6px 20px rgba(61, 10, 2, 0.12);
+  --shadow-lg: 0 16px 40px rgba(61, 10, 2, 0.18);
+  --shadow-inset: inset 0 0 0 2px var(--color-accent);
+
+  /* ---------- Layout ---------- */
+  --container-max: 1180px;
+  --header-height: 76px;
+  --mobile-cart-bar-height: 68px;
+
+  /* ---------- Transição ---------- */
+  --ease-standard: cubic-bezier(0.2, 0.7, 0.3, 1);
+  --duration-fast: 150ms;
+  --duration-normal: 250ms;
+}

@@ -1,0 +1,124 @@
+/* =========================================================
+   HERO
+   ========================================================= */
+.hero {
+  position: relative;
+  overflow: hidden;
+  padding-block: var(--space-9) var(--space-8);
+  background: var(--color-primary);
+  color: var(--color-text-inverse);
+}
+
+.hero::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(circle at 85% 20%, rgba(255, 207, 61, 0.35), transparent 45%),
+    radial-gradient(circle at 10% 90%, rgba(255, 207, 61, 0.18), transparent 40%);
+  pointer-events: none;
+}
+
+.hero .container {
+  position: relative;
+  display: grid;
+  grid-template-columns: 1.1fr 0.9fr;
+  align-items: center;
+  gap: var(--space-7);
+}
+
+.hero-eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  color: var(--color-accent);
+  font-weight: 700;
+  font-size: var(--fs-sm);
+  margin-bottom: var(--space-4);
+}
+
+.hero-eyebrow::before {
+  content: "";
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--color-accent);
+}
+
+.hero h1 {
+  font-size: clamp(2.1rem, 4vw, var(--fs-3xl));
+  color: var(--color-text-inverse);
+  margin-bottom: var(--space-4);
+}
+
+.hero p {
+  font-size: var(--fs-md);
+  color: rgba(255, 246, 227, 0.85);
+  max-width: 46ch;
+  margin-bottom: var(--space-6);
+  line-height: var(--lh-relaxed);
+}
+
+.hero-actions {
+  display: flex;
+  gap: var(--space-4);
+  flex-wrap: wrap;
+}
+
+.hero .btn-primary {
+  background: var(--color-accent);
+  color: var(--color-deep);
+}
+
+.hero .btn-primary:hover {
+  background: var(--color-accent-dark);
+}
+
+.hero .btn-outline {
+  border-color: rgba(255, 246, 227, 0.6);
+  color: var(--color-text-inverse);
+}
+
+.hero .btn-outline:hover {
+  background: rgba(255, 246, 227, 0.12);
+}
+
+.hero-seal {
+  position: relative;
+  justify-self: center;
+  width: min(320px, 80%);
+  aspect-ratio: 1;
+  border-radius: 50%;
+  overflow: hidden;
+  border: 6px solid var(--color-accent);
+  box-shadow: var(--shadow-lg);
+  animation: seal-in 0.6s var(--ease-standard);
+}
+
+.hero-seal img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+@keyframes seal-in {
+  from { opacity: 0; transform: scale(0.9) rotate(-6deg); }
+  to { opacity: 1; transform: scale(1) rotate(0); }
+}
+
+@media (max-width: 860px) {
+  .hero .container {
+    grid-template-columns: 1fr;
+    text-align: center;
+  }
+  .hero p {
+    margin-inline: auto;
+  }
+  .hero-actions {
+    justify-content: center;
+  }
+  .hero-seal {
+    order: -1;
+    width: 180px;
+  }
+}

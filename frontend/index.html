@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Chup Chup Gourmet | Peça já o seu cremosão</title>
+  <meta name="description" content="Cardápio online da Chup Chup Gourmet. Escolha seus produtos favoritos e receba onde estiver." />
+
+  <link rel="icon" href="assets/images/logo.jpg" type="image/jpeg" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+
+  <link rel="stylesheet" href="css/variables.css" />
+  <link rel="stylesheet" href="css/reset.css" />
+  <link rel="stylesheet" href="css/global.css" />
+  <link rel="stylesheet" href="css/header.css" />
+  <link rel="stylesheet" href="css/hero.css" />
+  <link rel="stylesheet" href="css/categories.css" />
+  <link rel="stylesheet" href="css/products.css" />
+  <link rel="stylesheet" href="css/cart.css" />
+  <link rel="stylesheet" href="css/responsive.css" />
+</head>
+<body>
+  <a href="#cardapio" class="skip-link">Pular para o cardápio</a>
+
+  <!-- ===== HEADER ===== -->
+  <header class="site-header">
+    <div class="container">
+      <div class="brand">
+        <span class="brand-seal">
+          <img src="assets/images/logo.jpg" alt="Selo Chup Chup Gourmet" />
+        </span>
+        <span class="brand-name">
+          <span class="brand-title">Chup Chup Gourmet</span>
+          <span class="brand-subtitle">Cremosão do seu jeito</span>
+        </span>
+      </div>
+
+      <nav class="main-nav" aria-label="Navegação principal">
+        <a href="#cardapio">Cardápio</a>
+        <a href="#categorias">Categorias</a>
+      </nav>
+
+      <div class="header-actions">
+        <button type="button" class="cart-button" id="cartButton" aria-haspopup="dialog">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+            <circle cx="9" cy="21" r="1"></circle>
+            <circle cx="20" cy="21" r="1"></circle>
+            <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6" stroke-linecap="round" stroke-linejoin="round"></path>
+          </svg>
+          <span>Carrinho</span>
+          <span class="cart-count" hidden>0</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <!-- ===== HERO ===== -->
+    <section class="hero">
+      <div class="container">
+        <div>
+          <span class="hero-eyebrow">Delivery gourmet</span>
+          <h1>Seu pedido favorito, do seu jeito.</h1>
+          <p>Escolha seus produtos e receba onde estiver. Cremosidade de verdade, direto na sua porta.</p>
+          <div class="hero-actions">
+            <button type="button" class="btn btn-primary" id="heroMenuCta">Ver cardápio</button>
+            <a href="#categorias" class="btn btn-outline">Ver categorias</a>
+          </div>
+        </div>
+        <div class="hero-seal">
+          <img src="assets/images/logo.jpg" alt="Selo Chup Chup Gourmet" />
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== CATEGORIAS ===== -->
+    <section class="section categories-section" id="categorias" aria-label="Categorias de produtos">
+      <div class="container">
+        <div class="categories-scroll" id="categoriesScroll" role="tablist" aria-label="Filtrar por categoria"></div>
+      </div>
+    </section>
+
+    <!-- ===== PRODUTOS ===== -->
+    <section class="section" id="cardapio" aria-label="Cardápio">
+      <div class="container">
+        <div class="section-heading">
+          <div>
+            <h2>Cardápio</h2>
+            <p>Tudo fresquinho, pronto para pedir.</p>
+          </div>
+        </div>
+
+        <div class="products-toolbar">
+          <div class="search-box">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+              <circle cx="11" cy="11" r="8"></circle>
+              <path d="m21 21-4.35-4.35" stroke-linecap="round"></path>
+            </svg>
+            <label for="searchInput" class="visually-hidden">Buscar produtos</label>
+            <input type="search" id="searchInput" placeholder="Buscar produtos..." autocomplete="off" />
+          </div>
+        </div>
+
+        <div class="products-grid" id="productsGrid" aria-live="polite"></div>
+        <div class="state-panel" id="productsState" hidden></div>
+        <nav class="pagination" id="productsPagination" aria-label="Paginação do cardápio"></nav>
+      </div>
+    </section>
+  </main>
+
+  <footer class="section" style="padding-block: var(--space-6); text-align:center;">
+    <div class="container">
+      <p class="text-muted">© <span id="year"></span> Chup Chup Gourmet. Todos os direitos reservados.</p>
+    </div>
+  </footer>
+
+  <!-- ===== CARRINHO (drawer) ===== -->
+  <div class="cart-overlay" id="cartOverlay"></div>
+  <aside class="cart-drawer" id="cartDrawer" role="dialog" aria-label="Carrinho de compras" aria-modal="true">
+    <div class="cart-header">
+      <h2>Seu carrinho</h2>
+      <button type="button" class="btn btn-icon btn-ghost" id="cartCloseBtn" aria-label="Fechar carrinho">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="20" height="20" aria-hidden="true">
+          <path d="M18 6 6 18M6 6l12 12" stroke-linecap="round"></path>
+        </svg>
+      </button>
+    </div>
+    <div class="cart-items" id="cartItems"></div>
+    <div class="cart-footer" id="cartFooter" hidden>
+      <div class="cart-summary-row">
+        <span>Subtotal</span>
+        <span id="cartSubtotal">R$ 0,00</span>
+      </div>
+      <div class="cart-summary-row">
+        <span>Entrega</span>
+        <span id="cartDelivery">R$ 0,00</span>
+      </div>
+      <div class="cart-summary-row is-total">
+        <span>Total</span>
+        <span id="cartTotal">R$ 0,00</span>
+      </div>
+      <a href="pages/checkout.html" class="btn btn-primary btn-block">Finalizar pedido</a>
+      <button type="button" class="clear-cart-link" id="clearCartLink">Esvaziar carrinho</button>
+    </div>
+  </aside>
+
+  <!-- ===== BARRA FIXA MOBILE ===== -->
+  <div class="mobile-cart-bar" id="mobileCartBar">
+    <div class="bar-info">
+      <span class="bar-count" id="mobileBarCount">0 itens</span>
+      <span class="bar-total" id="mobileBarTotal">R$ 0,00</span>
+    </div>
+    <button type="button" class="bar-cta" id="mobileBarCta">Ver carrinho</button>
+  </div>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <script src="js/config.js"></script>
+  <script src="js/api.js"></script>
+  <script src="js/cart.js"></script>
+  <script src="js/categories.js"></script>
+  <script src="js/products.js"></script>
+  <script src="js/checkout.js"></script>
+  <script src="js/main.js"></script>
+  <script>
+    document.getElementById("year").textContent = new Date().getFullYear();
+  </script>
+</body>
+</html>

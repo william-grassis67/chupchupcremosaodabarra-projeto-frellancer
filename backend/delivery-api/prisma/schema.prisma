@@ -1,0 +1,97 @@
+// Prisma schema for the Delivery API
+// Run `npx prisma migrate dev --name init` after configuring DATABASE_URL
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+enum OrderStatus {
+  pending
+  confirmed
+  preparing
+  out_for_delivery
+  delivered
+  cancelled
+}
+
+model Category {
+  id          Int       @id @default(autoincrement())
+  nome        String    @db.VarChar(100)
+  descricao   String?   @db.Text
+  ativo       Boolean   @default(true)
+  criadoEm    DateTime  @default(now()) @map("criado_em")
+  atualizadoEm DateTime @updatedAt @map("atualizado_em")
+
+  products    Product[]
+
+  @@index([ativo])
+  @@map("categories")
+}
+
+model Product {
+  id          Int       @id @default(autoincrement())
+  nome        String    @db.VarChar(150)
+  descricao   String?   @db.Text
+  preco       Decimal   @db.Decimal(10, 2)
+  imagem      String?   @db.VarChar(500)
+  disponivel  Boolean   @default(true)
+  destaque    Boolean   @default(false)
+  criadoEm    DateTime  @default(now()) @map("criado_em")
+  atualizadoEm DateTime @updatedAt @map("atualizado_em")
+
+  categoriaId Int       @map("categoria_id")
+  categoria   Category  @relation(fields: [categoriaId], references: [id], onDelete: Restrict, onUpdate: Cascade)
+
+  orderItems  OrderItem[]
+
+  @@index([categoriaId])
+  @@index([disponivel])
+  @@index([destaque])
+  @@index([nome])
+  @@map("products")
+}
+
+model Order {
+  id              Int          @id @default(autoincrement())
+  nomeCliente     String       @map("nome_cliente") @db.VarChar(150)
+  endereco        String       @db.VarChar(200)
+  numero          String       @db.VarChar(20)
+  complemento     String?      @db.VarChar(100)
+  bairro          String       @db.VarChar(100)
+  observacao      String?      @db.Text
+  formaPagamento  String       @map("forma_pagamento") @db.VarChar(50)
+  valorProdutos   Decimal      @map("valor_produtos") @db.Decimal(10, 2)
+  taxaEntrega     Decimal      @map("taxa_entrega") @db.Decimal(10, 2)
+  valorTotal      Decimal      @map("valor_total") @db.Decimal(10, 2)
+  status          OrderStatus  @default(pending)
+  criadoEm        DateTime     @default(now()) @map("criado_em")
+  atualizadoEm    DateTime     @updatedAt @map("atualizado_em")
+
+  itens           OrderItem[]
+
+  @@index([status])
+  @@index([criadoEm])
+  @@map("orders")
+}
+
+model OrderItem {
+  id              Int      @id @default(autoincrement())
+  pedidoId        Int      @map("pedido_id")
+  produtoId       Int      @map("produto_id")
+  nomeProduto     String   @map("nome_produto") @db.VarChar(150)
+  quantidade      Int
+  precoUnitario   Decimal  @map("preco_unitario") @db.Decimal(10, 2)
+  subtotal        Decimal  @db.Decimal(10, 2)
+
+  pedido          Order    @relation(fields: [pedidoId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  produto         Product  @relation(fields: [produtoId], references: [id], onDelete: Restrict, onUpdate: Cascade)
+
+  @@index([pedidoId])
+  @@index([produtoId])
+  @@map("order_items")
+}

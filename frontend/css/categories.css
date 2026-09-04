@@ -1,0 +1,55 @@
+/* =========================================================
+   CATEGORIAS
+   ========================================================= */
+.categories-section {
+  padding-block: var(--space-7) var(--space-6);
+}
+
+.categories-scroll {
+  display: flex;
+  gap: var(--space-3);
+  overflow-x: auto;
+  padding-bottom: var(--space-2);
+  scrollbar-width: thin;
+}
+
+.categories-scroll::-webkit-scrollbar {
+  height: 6px;
+}
+
+.categories-scroll::-webkit-scrollbar-thumb {
+  background: var(--color-border-strong);
+  border-radius: var(--radius-pill);
+}
+
+.category-chip {
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: 0.7em 1.3em;
+  border-radius: var(--radius-pill);
+  background: var(--color-surface);
+  border: 1.5px solid var(--color-border);
+  font-weight: 700;
+  font-size: var(--fs-sm);
+  color: var(--color-text);
+  transition: background var(--duration-fast) var(--ease-standard),
+              color var(--duration-fast) var(--ease-standard),
+              border-color var(--duration-fast) var(--ease-standard);
+}
+
+.category-chip:hover {
+  border-color: var(--color-primary);
+}
+
+.category-chip.is-active {
+  background: var(--color-primary);
+  border-color: var(--color-primary);
+  color: var(--color-text-inverse);
+}
+
+.category-chip .chip-skeleton {
+  width: 90px;
+  height: 18px;
+}

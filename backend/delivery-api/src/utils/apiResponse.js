@@ -1,0 +1,15 @@
+// Standard response helpers so every endpoint follows the same JSON shape.
+
+function success(res, data = {}, statusCode = 200, meta = undefined) {
+  const body = { success: true, data };
+  if (meta) body.meta = meta;
+  return res.status(statusCode).json(body);
+}
+
+function error(res, message = 'Something went wrong', statusCode = 400, errors = undefined) {
+  const body = { success: false, message };
+  if (errors) body.errors = errors;
+  return res.status(statusCode).json(body);
+}
+
+module.exports = { success, error };
