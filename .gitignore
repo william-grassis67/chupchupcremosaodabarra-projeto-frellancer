@@ -1,0 +1,40 @@
+# Environment files and secrets
+.env
+.env.*
+!.env.example
+
+# Dependencies
+**/node_modules/
+
+# Build and generated output
+backend/target/
+backend/**/dist/
+backend/**/build/
+frontend/dist/
+frontend/build/
+
+# Runtime logs and local database files
+*.log
+backend/**/*.log
+backend/delivery-api/prisma/*.db
+backend/delivery-api/prisma/*.db-journal
+
+# Temporary archives generated during development
+frontend.zip
+backend/**/*.zip
+
+# IDE and editor files
+.idea/
+.vscode/
+*.iml
+
+# Operating system files
+.DS_Store
+Thumbs.db
+
+# Temporary files
+*.tmp
+*.temp
+*.swp
+*.swo
+*~
