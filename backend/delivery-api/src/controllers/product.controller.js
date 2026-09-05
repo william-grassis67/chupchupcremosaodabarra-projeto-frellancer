@@ -2,9 +2,16 @@ const productService = require('../services/product.service');
 const catchAsync = require('../utils/catchAsync');
 const { success } = require('../utils/apiResponse');
 
+function publicBaseUrl(req) {
+  const fallback = process.env.NODE_ENV === 'production'
+    ? 'https://chupchupcremosao.com'
+    : `${req.protocol}://${req.get('host')}`;
+  return (process.env.PUBLIC_BASE_URL || fallback).replace(/\/$/, '');
+}
+
 function imageValue(req) {
-  if (req.file) return `${req.protocol}://${req.get('host')}/uploads/products/${req.file.filename}`;
-  return req.body.imagem;
+  if (req.file) return `${publicBaseUrl(req)}/uploads/products/${req.file.filename}`;
+  return req.body.imagem || null;
 }
 
 function productValue(req) {

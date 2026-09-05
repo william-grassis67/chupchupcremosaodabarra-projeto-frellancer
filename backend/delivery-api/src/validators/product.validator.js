@@ -6,7 +6,7 @@ const createProductRules = [
   body('preco')
     .notEmpty().withMessage('preco is required')
     .isFloat({ gt: 0 }).withMessage('preco must be a positive number'),
-  body('imagem').optional({ nullable: true }).isString().isLength({ max: 500 }),
+  body('imagem').optional({ nullable: true, checkFalsy: true }).isString().isLength({ max: 500 }),
   body('categoriaId')
     .notEmpty().withMessage('categoriaId is required')
     .isInt({ gt: 0 }).withMessage('categoriaId must be a positive integer'),
@@ -19,7 +19,7 @@ const updateProductRules = [
   body('nome').optional().trim().notEmpty().isLength({ max: 150 }),
   body('descricao').optional({ nullable: true }).isString(),
   body('preco').optional().isFloat({ gt: 0 }).withMessage('preco must be a positive number'),
-  body('imagem').optional({ nullable: true }).isString().isLength({ max: 500 }),
+  body('imagem').optional({ nullable: true, checkFalsy: true }).isString().isLength({ max: 500 }),
   body('categoriaId').optional().isInt({ gt: 0 }),
   body('disponivel').optional().isBoolean(),
   body('destaque').optional().isBoolean(),

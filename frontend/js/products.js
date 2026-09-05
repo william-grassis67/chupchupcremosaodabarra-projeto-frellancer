@@ -12,6 +12,15 @@ const Products = (function () {
   const PLACEHOLDER_IMAGE =
     "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 150'%3E%3Crect width='200' height='150' fill='%23fff3d6'/%3E%3Ctext x='50%25' y='50%25' font-family='sans-serif' font-size='14' fill='%23a70c12' text-anchor='middle' dominant-baseline='middle'%3ESem imagem%3C/text%3E%3C/svg%3E";
 
+  function resolveImageUrl(value) {
+    if (!value) return PLACEHOLDER_IMAGE;
+    try {
+      return new URL(value, API_URL).toString();
+    } catch {
+      return PLACEHOLDER_IMAGE;
+    }
+  }
+
   let currentPage = 1;
   let totalPages = 1;
   let currentCategory = null;
@@ -38,12 +47,7 @@ const Products = (function () {
       description: raw.descricao ?? raw.description ?? raw.details ?? "",
       price: Number(raw.preco ?? raw.price ?? raw.value ?? 0),
       image:
-        raw.image ??
-        raw.imagem ??
-        raw.imageUrl ??
-        raw.image_url ??
-        raw.photo ??
-        PLACEHOLDER_IMAGE,
+        resolveImageUrl(raw.image ?? raw.imagem ?? raw.imageUrl ?? raw.image_url ?? raw.photo),
       categoryName,
       available: raw.disponivel ?? raw.available ?? raw.isAvailable ?? raw.in_stock ?? true,
       featured: raw.destaque ?? raw.featured ?? raw.isFeatured ?? raw.highlight ?? false,
@@ -221,19 +225,25 @@ const Products = (function () {
     renderLoading();
 
     const params = {
-      available: true,
-      page: currentPage,
-      limit: PRODUCTS_PAGE_SIZE,
+      page: 1,
+      limit: 100,
     };
     if (currentCategory) params.category = currentCategory;
     if (currentSearch) params.search = currentSearch;
 
     try {
-      const data = await api.getProducts(params);
+      const firstPage = await api.getProductsPage(params);
+      const list = [...(firstPage.data || [])];
+      const totalPagesFromApi = Math.max(1, firstPage.meta.totalPages || 1);
+
+      for (let page = 2; page <= totalPagesFromApi; page += 1) {
+        const nextPage = await api.getProductsPage({ ...params, page });
+        list.push(...(nextPage.data || []));
+      }
+
       if (token !== requestToken) return; // resposta obsoleta, ignore
 
-      const { list, pages } = parseResponse(data);
-      totalPages = Math.max(1, pages);
+      totalPages = 1;
       renderProducts(list.map(normalize));
       renderPagination();
     } catch (err) {

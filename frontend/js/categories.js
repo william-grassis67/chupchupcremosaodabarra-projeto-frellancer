@@ -15,9 +15,12 @@ const Categories = (function () {
    * Aceita variações comuns de nomes de campo.
    */
   function normalize(raw) {
+    const name = raw.nome ?? raw.name ?? raw.title;
+    if (!name) return null;
+
     return {
       id: String(raw.id ?? raw._id ?? raw.categoryId),
-      name: raw.nome ?? raw.name ?? raw.title ?? "Categoria",
+      name: String(name).trim(),
     };
   }
 
@@ -77,9 +80,9 @@ const Categories = (function () {
     renderSkeleton();
     try {
       const data = await api.getCategories();
-      categories = (Array.isArray(data) ? data : data.categories || []).map(
-        normalize
-      );
+      categories = (Array.isArray(data) ? data : data.categories || [])
+        .map(normalize)
+        .filter(Boolean);
       renderChips();
     } catch (err) {
       // Se as categorias falharem, ainda deixamos o "Todos" disponível
