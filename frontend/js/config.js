@@ -16,6 +16,9 @@ const CART_STORAGE_KEY = "chupchup:cart";
 // Quantidade de produtos por página no cardápio.
 const PRODUCTS_PAGE_SIZE = 12;
 
+// Valor mínimo dos produtos para criar um pedido.
+const MIN_ORDER_VALUE_CENTS = 2400;
+
 // Tempo (ms) de debounce da busca de produtos.
 const SEARCH_DEBOUNCE_MS = 400;
 

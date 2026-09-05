@@ -18,6 +18,19 @@ const Checkout = (function () {
     return value.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
   }
 
+  function updateMinimumOrderState() {
+    const missingCents = MIN_ORDER_VALUE_CENTS - Math.round(Cart.getSubtotal() * 100);
+    const belowMinimum = missingCents > 0;
+    submitBtn.disabled = belowMinimum;
+    if (belowMinimum) {
+      submitErrorEl.textContent = `Pedido mínimo de R$ 24,00. Faltam ${formatPrice(missingCents / 100)} para atingir o pedido mínimo de R$ 24,00.`;
+      submitErrorEl.classList.add("is-visible");
+    } else {
+      submitErrorEl.classList.remove("is-visible");
+      submitErrorEl.textContent = "";
+    }
+  }
+
   function renderSummary() {
     const neighborhood = form.elements.neighborhood.value;
     const state = Cart.getState(neighborhood);
@@ -35,6 +48,7 @@ const Checkout = (function () {
     summarySubtotalEl.textContent = formatPrice(state.subtotal);
     summaryDeliveryEl.textContent = formatPrice(state.deliveryFee);
     summaryTotalEl.textContent = formatPrice(state.total);
+    updateMinimumOrderState();
   }
 
   function renderPaymentOptions() {
@@ -92,6 +106,12 @@ const Checkout = (function () {
       valid = false;
     }
 
+    if (Math.round(Cart.getSubtotal() * 100) < MIN_ORDER_VALUE_CENTS) {
+      submitErrorEl.textContent = `Pedido mínimo de R$ 24,00. Faltam ${formatPrice((MIN_ORDER_VALUE_CENTS - Math.round(Cart.getSubtotal() * 100)) / 100)} para atingir o pedido mínimo de R$ 24,00.`;
+      submitErrorEl.classList.add("is-visible");
+      valid = false;
+    }
+
     if (!DELIVERY_FEES[formData.get("neighborhood")]) {
       setFieldError("neighborhood", "Selecione um bairro válido para entrega.");
       valid = false;
@@ -129,6 +149,11 @@ const Checkout = (function () {
     if (submitBtn.disabled) return; // evita envios duplicados
 
     const formData = new FormData(form);
+
+    if (Math.round(Cart.getSubtotal() * 100) < MIN_ORDER_VALUE_CENTS) {
+      updateMinimumOrderState();
+      return;
+    }
 
     if (Cart.isEmpty()) {
       submitErrorEl.textContent = "Seu carrinho está vazio.";

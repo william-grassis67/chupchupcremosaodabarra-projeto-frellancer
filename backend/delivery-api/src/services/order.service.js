@@ -1,6 +1,8 @@
 const prisma = require('../config/prisma');
 const AppError = require('../utils/AppError');
 
+const MIN_ORDER_VALUE_CENTS = 2400;
+
 const DELIVERY_FEES_CENTS = {
   'Antonio Lopez': 200,
   Areal: 200,
@@ -109,6 +111,13 @@ async function createOrder(payload) {
   }
 
   const { orderItemsData, valorProdutosCents } = await buildOrderItems(itens);
+  if (valorProdutosCents < MIN_ORDER_VALUE_CENTS) {
+    const missingCents = MIN_ORDER_VALUE_CENTS - valorProdutosCents;
+    throw new AppError(
+      `Minimum order value is R$ 24.00. Add R$ ${(missingCents / 100).toFixed(2)} more to continue.`,
+      422,
+    );
+  }
   const taxaEntregaCents = calculateDeliveryFeeCents(valorProdutosCents, bairro);
   const valorTotalCents = valorProdutosCents + taxaEntregaCents;
 
