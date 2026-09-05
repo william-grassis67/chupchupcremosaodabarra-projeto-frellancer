@@ -1,6 +1,7 @@
 const express = require('express');
 const helmet = require('helmet');
 const cors = require('cors');
+const path = require('path');
 
 const corsOptions = require('./config/cors');
 const apiLimiter = require('./config/rateLimit');
@@ -9,6 +10,7 @@ const notFound = require('./middlewares/notFound');
 const errorHandler = require('./middlewares/errorHandler');
 
 const app = express();
+app.set('trust proxy', 1);
 
 // Security headers
 app.use(helmet());
@@ -19,6 +21,10 @@ app.use(cors(corsOptions));
 // Body parsing
 app.use(express.json({ limit: '10kb' }));
 app.use(express.urlencoded({ extended: true, limit: '10kb' }));
+app.use('/uploads', express.static(path.join(__dirname, '../uploads'), {
+  maxAge: '1d',
+  index: false,
+}));
 
 // Basic rate limiting on all /api routes
 app.use('/api', apiLimiter);

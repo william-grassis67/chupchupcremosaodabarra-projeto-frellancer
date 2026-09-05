@@ -78,13 +78,18 @@ Hospedagens estáticas que seguem a convenção `404.html` (incluindo o comando 
 
 ## ⚙️ Configuração da API
 
-A URL base da API fica centralizada em `js/config.js`:
+A URL base da API fica centralizada em `js/config.js`. Por padrão, produção usa
+`/api`, portanto o domínio do frontend precisa encaminhar esse caminho para o
+backend. Quando frontend e backend estiverem em domínios diferentes, defina a
+URL antes de carregar `js/config.js`:
 
 ```javascript
-const API_URL = "/api";
+window.__API_URL__ = "https://api.seudominio.com/api";
 ```
 
-Altere esse valor caso o backend esteja rodando em outro host, porta ou domínio (ex.: ambiente de homologação/produção).
+Em desenvolvimento local, a página servida em `localhost` usa automaticamente
+`http://localhost:3000/api`. A API deve permitir a origem do frontend em
+`CORS_ORIGIN`.
 
 ## 🔌 Endpoints utilizadas pelo frontend
 

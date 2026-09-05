@@ -7,7 +7,9 @@ async function listProducts(filters = {}) {
   const where = {};
 
   if (category) {
-    where.categoria = { nome: { equals: category } };
+    where.categoria = Number.isInteger(Number(category))
+      ? { id: Number(category) }
+      : { nome: { equals: category } };
   }
   if (available !== undefined) {
     where.disponivel = available;

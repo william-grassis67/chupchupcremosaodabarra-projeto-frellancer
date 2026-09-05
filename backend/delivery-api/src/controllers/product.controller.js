@@ -2,6 +2,20 @@ const productService = require('../services/product.service');
 const catchAsync = require('../utils/catchAsync');
 const { success } = require('../utils/apiResponse');
 
+function imageValue(req) {
+  if (req.file) return `${req.protocol}://${req.get('host')}/uploads/products/${req.file.filename}`;
+  return req.body.imagem;
+}
+
+function productValue(req) {
+  const data = { ...req.body };
+  for (const field of ['disponivel', 'destaque']) {
+    if (data[field] === 'true') data[field] = true;
+    if (data[field] === 'false') data[field] = false;
+  }
+  return data;
+}
+
 const getAll = catchAsync(async (req, res) => {
   const { category, available, featured, search, page, limit } = req.query;
 
@@ -23,12 +37,14 @@ const getById = catchAsync(async (req, res) => {
 });
 
 const create = catchAsync(async (req, res) => {
-  const product = await productService.createProduct(req.body);
+  const product = await productService.createProduct({ ...productValue(req), imagem: imageValue(req) });
   return success(res, product, 201);
 });
 
 const update = catchAsync(async (req, res) => {
-  const product = await productService.updateProduct(req.params.id, req.body);
+  const data = productValue(req);
+  if (req.file || Object.prototype.hasOwnProperty.call(req.body, 'imagem')) data.imagem = imageValue(req);
+  const product = await productService.updateProduct(req.params.id, data);
   return success(res, product);
 });
 

@@ -39,12 +39,10 @@ function buildQueryString(params) {
  */
 async function request(path, options = {}) {
   let response;
+  const isMultipart = typeof FormData !== "undefined" && options.body instanceof FormData;
   try {
     response = await fetch(`${API_URL}${path}`, {
-      headers: {
-        "Content-Type": "application/json",
-        ...(options.headers || {}),
-      },
+      headers: isMultipart ? { ...(options.headers || {}) } : { "Content-Type": "application/json", ...(options.headers || {}) },
       ...options,
     });
   } catch (networkError) {

@@ -2,8 +2,10 @@
    CONFIG — configurações globais da aplicação
    ========================================================= */
 
-// Usa o mesmo domínio do frontend; o Nginx encaminha /api para o backend.
-const API_URL = "/api";
+// Produção usa a API pública; o fallback local existe somente para desenvolvimento.
+const configuredApiUrl = window.__API_URL__ || document.querySelector('meta[name="api-base-url"]')?.content;
+const isLocalFrontend = ["localhost", "127.0.0.1"].includes(window.location.hostname) && window.location.port !== "3000";
+const API_URL = configuredApiUrl || (isLocalFrontend ? "http://localhost:3000/api" : "https://chupchupcremosao.com/api");
 
 // Número da loja no formato internacional, sem símbolos.
 const WHATSAPP_NUMBER = "5527997765557";

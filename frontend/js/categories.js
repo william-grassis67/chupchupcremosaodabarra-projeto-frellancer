@@ -17,7 +17,7 @@ const Categories = (function () {
   function normalize(raw) {
     return {
       id: String(raw.id ?? raw._id ?? raw.categoryId),
-      name: raw.name ?? raw.title ?? "Categoria",
+      name: raw.nome ?? raw.name ?? raw.title ?? "Categoria",
     };
   }
 

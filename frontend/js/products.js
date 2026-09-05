@@ -27,6 +27,7 @@ const Products = (function () {
   function normalize(raw) {
     const categoryName =
       (raw.category && (raw.category.name || raw.category.title)) ||
+      (raw.categoria && (raw.categoria.nome || raw.categoria.name)) ||
       raw.categoryName ||
       raw.category_name ||
       null;
@@ -38,6 +39,7 @@ const Products = (function () {
       price: Number(raw.preco ?? raw.price ?? raw.value ?? 0),
       image:
         raw.image ??
+        raw.imagem ??
         raw.imageUrl ??
         raw.image_url ??
         raw.photo ??
@@ -137,6 +139,12 @@ const Products = (function () {
         </div>
       </div>
     `;
+
+    const imageEl = card.querySelector("img");
+    imageEl.addEventListener("error", () => {
+      imageEl.src = PLACEHOLDER_IMAGE;
+      imageEl.removeAttribute("srcset");
+    }, { once: true });
 
     const addBtn = card.querySelector(".product-add-btn");
     addBtn.addEventListener("click", () => {
