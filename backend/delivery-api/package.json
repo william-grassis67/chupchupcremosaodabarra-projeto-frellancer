@@ -4,7 +4,7 @@
   "description": "REST API backend for a food delivery website (no customer authentication)",
   "main": "src/server.js",
   "scripts": {
-    "prestart": "prisma migrate deploy",
+    "prestart": "prisma generate && prisma migrate deploy",
     "start": "node src/server.js",
     "dev": "nodemon src/server.js",
     "prisma:generate": "prisma generate",
