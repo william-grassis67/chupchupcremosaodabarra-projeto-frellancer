@@ -83,6 +83,16 @@ npx prisma generate
 npx prisma migrate dev --name init
 ```
 
+In production, use the committed migrations before starting the API:
+
+```bash
+npx prisma generate
+npx prisma migrate deploy
+npm start
+```
+
+`npm start` also runs `prisma migrate deploy` automatically through the `prestart` script.
+
 3. (Optional) Seed the database with sample categories and products:
 
 ```bash
