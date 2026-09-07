@@ -23,12 +23,19 @@ async function listProducts(filters = {}) {
 
   const skip = (Number(page) - 1) * Number(limit);
   const take = Number(limit);
+  const orderBy = category
+    ? { criadoEm: 'desc' }
+    : [
+      { destaque: 'desc' },
+      { ordemDestaque: 'asc' },
+      { criadoEm: 'desc' },
+    ];
 
   const [items, total] = await Promise.all([
     prisma.product.findMany({
       where,
       include: { categoria: true },
-      orderBy: { criadoEm: 'desc' },
+      orderBy,
       skip,
       take,
     }),
@@ -72,6 +79,7 @@ async function createProduct(data) {
       imagem: data.imagem ?? null,
       disponivel: data.disponivel ?? true,
       destaque: data.destaque ?? false,
+      ordemDestaque: data.ordemDestaque ?? 0,
       categoriaId: Number(data.categoriaId),
     },
     include: { categoria: true },
@@ -94,6 +102,7 @@ async function updateProduct(id, data) {
       ...(data.imagem !== undefined && { imagem: data.imagem }),
       ...(data.disponivel !== undefined && { disponivel: data.disponivel }),
       ...(data.destaque !== undefined && { destaque: data.destaque }),
+      ...(data.ordemDestaque !== undefined && { ordemDestaque: Number(data.ordemDestaque) }),
       ...(data.categoriaId !== undefined && { categoriaId: Number(data.categoriaId) }),
     },
     include: { categoria: true },

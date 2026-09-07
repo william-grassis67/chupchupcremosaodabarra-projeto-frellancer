@@ -4,7 +4,7 @@ const AppError = require('../utils/AppError');
 const MIN_ORDER_VALUE_CENTS = 2400;
 
 const DELIVERY_FEES_CENTS = {
-  'Antonio Lopez': 200,
+  'Antonio Lopez': 400,
   Areal: 200,
   Bugia: 200,
   Centro: 200,
@@ -18,16 +18,16 @@ const DELIVERY_FEES_CENTS = {
   'Marcilio Dias 2': 200,
   'Nossa Senhora Aparecida': 200,
   'Nova Bethânia': 200,
-  'Quilombo Novo': 200,
-  Santana: 200,
+  'Quilombo Novo': 400,
+  Santana: 400,
   Santiago: 200,
   'Santo Amaro': 200,
   'São Jose': 200,
   Urbens: 200,
   'Vila dos Pescadores': 200,
-  'Nova Esperança': 200,
-  'Novo Horizonte': 200,
-  'Maria Manteiga': 300,
+  'Nova Esperança': 400,
+  'Novo Horizonte': 400,
+  'Maria Manteiga': 400,
 };
 
 function decimalToCents(value) {

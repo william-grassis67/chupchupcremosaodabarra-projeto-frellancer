@@ -183,11 +183,9 @@ const Checkout = (function () {
         })),
       });
 
-      sessionStorage.setItem("chupchup:lastOrder", JSON.stringify(order));
       const message = buildWhatsAppMessage(formData, order);
-      window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(message)}`, "_blank", "noopener");
-      submitErrorEl.textContent = "Pedido registrado! Confira a mensagem no WhatsApp e envie para finalizar.";
-      submitErrorEl.classList.add("is-visible");
+      sessionStorage.setItem("chupchup:lastOrder", JSON.stringify({ order, message }));
+      window.location.href = "../pages/success.html";
     } catch (error) {
       submitErrorEl.textContent = getApiErrorMessage(error) || "Não foi possível registrar o pedido.";
       submitErrorEl.classList.add("is-visible");

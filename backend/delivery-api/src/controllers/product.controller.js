@@ -20,6 +20,7 @@ function productValue(req) {
     if (data[field] === 'true') data[field] = true;
     if (data[field] === 'false') data[field] = false;
   }
+  if (data.ordemDestaque !== undefined) data.ordemDestaque = Number(data.ordemDestaque);
   return data;
 }
 

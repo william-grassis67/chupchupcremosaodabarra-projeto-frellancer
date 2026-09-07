@@ -12,6 +12,7 @@ const createProductRules = [
     .isInt({ gt: 0 }).withMessage('categoriaId must be a positive integer'),
   body('disponivel').optional().isBoolean(),
   body('destaque').optional().isBoolean(),
+  body('ordemDestaque').optional().isInt({ min: 0 }).toInt(),
 ];
 
 const updateProductRules = [
@@ -23,6 +24,7 @@ const updateProductRules = [
   body('categoriaId').optional().isInt({ gt: 0 }),
   body('disponivel').optional().isBoolean(),
   body('destaque').optional().isBoolean(),
+  body('ordemDestaque').optional().isInt({ min: 0 }).toInt(),
 ];
 
 const idParamRule = [param('id').isInt({ gt: 0 }).withMessage('id must be a positive integer')];

@@ -24,7 +24,7 @@ const SEARCH_DEBOUNCE_MS = 400;
 
 // Bairros aceitos pela API e suas taxas na faixa de entrega aplicável.
 const DELIVERY_FEES = Object.freeze({
-  "Antonio Lopez": 2,
+  "Antonio Lopez": 4,
   Areal: 2,
   Bugia: 2,
   Centro: 2,
@@ -38,16 +38,16 @@ const DELIVERY_FEES = Object.freeze({
   "Marcilio Dias 2": 2,
   "Nossa Senhora Aparecida": 2,
   "Nova Bethânia": 2,
-  "Quilombo Novo": 2,
-  Santana: 2,
+  "Quilombo Novo": 4,
+  Santana: 4,
   Santiago: 2,
   "Santo Amaro": 2,
   "São Jose": 2,
   Urbens: 2,
   "Vila dos Pescadores": 2,
-  "Maria Manteiga": 3,
-  "Nova Esperança": 2,
-  "Novo Horizonte": 2,
+  "Maria Manteiga": 4,
+  "Nova Esperança": 4,
+  "Novo Horizonte": 4,
 });
 
 // Opções de forma de pagamento aceitas.

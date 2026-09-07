@@ -168,17 +168,33 @@ const CartUI = (function () {
 /* ---------- Página de sucesso ---------- */
 const SuccessPage = (function () {
   const orderNumberEl = document.getElementById("orderNumber");
+  const redirectMessageEl = document.getElementById("redirectMessage");
 
   function init() {
     if (!orderNumberEl) return;
 
     try {
       const raw = sessionStorage.getItem("chupchup:lastOrder");
-      const order = raw ? JSON.parse(raw) : null;
+      const stored = raw ? JSON.parse(raw) : null;
+      const order = stored?.order || stored;
       if (order && order.id) {
         orderNumberEl.textContent = `Pedido #${order.id}`;
       } else {
         orderNumberEl.textContent = "Pedido recebido";
+      }
+
+      if (stored?.message && redirectMessageEl) {
+        let seconds = 3;
+        redirectMessageEl.textContent = `Abrindo o WhatsApp em ${seconds} segundos...`;
+        const countdown = setInterval(() => {
+          seconds -= 1;
+          if (seconds > 0) {
+            redirectMessageEl.textContent = `Abrindo o WhatsApp em ${seconds} segundos...`;
+            return;
+          }
+          clearInterval(countdown);
+          window.location.href = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(stored.message)}`;
+        }, 1000);
       }
     } catch (err) {
       orderNumberEl.textContent = "Pedido recebido";
