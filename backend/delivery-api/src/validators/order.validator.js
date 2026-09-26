@@ -1,4 +1,5 @@
 const { body, param } = require('express-validator');
+const { normalizeNeighborhood } = require('../utils/neighborhood');
 
 const VALID_STATUSES = [
   'pending',
@@ -28,6 +29,8 @@ const VALID_NEIGHBORHOODS = [
   'Nova Esperança',
   'Novo Horizonte',
   'Quilombo Novo',
+  'Quilombo',
+  'Novo Santana',
   'Santana',
   'Santiago',
   'Santo Amaro',
@@ -44,6 +47,9 @@ const createOrderRules = [
   body('bairro')
     .trim()
     .notEmpty().withMessage('bairro is required')
+    .customSanitizer((value) => VALID_NEIGHBORHOODS.find(
+      (neighborhood) => normalizeNeighborhood(neighborhood) === normalizeNeighborhood(value),
+    ) || value)
     .isIn(VALID_NEIGHBORHOODS).withMessage('bairro is not available for delivery'),
   body('observacao').optional({ nullable: true }).isString(),
   body('formaPagamento').trim().notEmpty().withMessage('formaPagamento is required').isLength({ max: 50 }),

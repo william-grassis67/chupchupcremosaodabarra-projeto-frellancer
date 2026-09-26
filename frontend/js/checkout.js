@@ -112,7 +112,7 @@ const Checkout = (function () {
       valid = false;
     }
 
-    if (!DELIVERY_FEES[formData.get("neighborhood")]) {
+    if (!getNeighborhoodDeliveryFee(formData.get("neighborhood"))) {
       setFieldError("neighborhood", "Selecione um bairro válido para entrega.");
       valid = false;
     }

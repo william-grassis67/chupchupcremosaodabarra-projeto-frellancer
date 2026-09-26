@@ -38,6 +38,8 @@ const DELIVERY_FEES = Object.freeze({
   "Marcilio Dias 2": 2,
   "Nossa Senhora Aparecida": 2,
   "Nova Bethânia": 2,
+  Quilombo: 4,
+  "Novo Santana": 4,
   "Quilombo Novo": 4,
   Santana: 4,
   Santiago: 2,
@@ -49,6 +51,39 @@ const DELIVERY_FEES = Object.freeze({
   "Nova Esperança": 4,
   "Novo Horizonte": 4,
 });
+
+const FIXED_DELIVERY_NEIGHBORHOODS = Object.freeze([
+  "Quilombo",
+  "Novo Santana",
+  "Maria Manteiga",
+  "Nova Esperança",
+  "Novo Horizonte",
+  "Antonio Lopez",
+]);
+
+function normalizeNeighborhoodName(value) {
+  return String(value ?? "")
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .trim()
+    .replace(/\s+/g, " ")
+    .toLocaleLowerCase("pt-BR");
+}
+
+function getNeighborhoodDeliveryFee(neighborhood) {
+  const normalized = normalizeNeighborhoodName(neighborhood);
+  const match = Object.keys(DELIVERY_FEES).find(
+    (name) => normalizeNeighborhoodName(name) === normalized
+  );
+  return match ? DELIVERY_FEES[match] : 0;
+}
+
+function hasFixedDeliveryFee(neighborhood) {
+  const normalized = normalizeNeighborhoodName(neighborhood);
+  return FIXED_DELIVERY_NEIGHBORHOODS.some(
+    (name) => normalizeNeighborhoodName(name) === normalized
+  );
+}
 
 // Opções de forma de pagamento aceitas.
 // Ajuste os "value" para bater exatamente com o que o backend espera.

@@ -110,9 +110,13 @@ const Cart = (function () {
   }
 
   function getDeliveryFee(neighborhood) {
+    if (items.length === 0) return 0;
     const subtotal = getSubtotal();
-    return items.length > 0 && subtotal > 24 && subtotal < 35
-      ? DELIVERY_FEES[neighborhood] || 0
+    if (hasFixedDeliveryFee(neighborhood)) {
+      return getNeighborhoodDeliveryFee(neighborhood);
+    }
+    return subtotal > 24 && subtotal < 35
+      ? getNeighborhoodDeliveryFee(neighborhood)
       : 0;
   }
 

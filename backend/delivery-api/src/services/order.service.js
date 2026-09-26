@@ -1,5 +1,6 @@
 const prisma = require('../config/prisma');
 const AppError = require('../utils/AppError');
+const { normalizeNeighborhood } = require('../utils/neighborhood');
 
 const MIN_ORDER_VALUE_CENTS = 2400;
 
@@ -19,6 +20,8 @@ const DELIVERY_FEES_CENTS = {
   'Nossa Senhora Aparecida': 200,
   'Nova Bethânia': 200,
   'Quilombo Novo': 400,
+  Quilombo: 400,
+  'Novo Santana': 400,
   Santana: 400,
   Santiago: 200,
   'Santo Amaro': 200,
@@ -29,6 +32,15 @@ const DELIVERY_FEES_CENTS = {
   'Novo Horizonte': 400,
   'Maria Manteiga': 400,
 };
+
+const FIXED_DELIVERY_NEIGHBORHOODS = new Set([
+  'Quilombo',
+  'Novo Santana',
+  'Maria Manteiga',
+  'Nova Esperança',
+  'Novo Horizonte',
+  'Antonio Lopez',
+].map(normalizeNeighborhood));
 
 function decimalToCents(value) {
   const fixed = typeof value?.toFixed === 'function' ? value.toFixed(2) : String(value);
@@ -42,12 +54,21 @@ function centsToDecimal(cents) {
 }
 
 function calculateDeliveryFeeCents(valorProdutosCents, bairro) {
-  if (!(bairro in DELIVERY_FEES_CENTS)) {
+  const normalizedNeighborhood = normalizeNeighborhood(bairro);
+  const canonicalNeighborhood = Object.keys(DELIVERY_FEES_CENTS).find(
+    (name) => normalizeNeighborhood(name) === normalizedNeighborhood,
+  );
+
+  if (!canonicalNeighborhood) {
     throw new AppError('bairro is not available for delivery', 422);
   }
 
+  if (FIXED_DELIVERY_NEIGHBORHOODS.has(normalizedNeighborhood)) {
+    return 400;
+  }
+
   return valorProdutosCents > 2400 && valorProdutosCents < 3500
-    ? DELIVERY_FEES_CENTS[bairro]
+    ? DELIVERY_FEES_CENTS[canonicalNeighborhood]
     : 0;
 }
 
