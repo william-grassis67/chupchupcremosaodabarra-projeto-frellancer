@@ -26,8 +26,10 @@ app.use('/uploads', express.static(path.join(__dirname, '../uploads'), {
   index: false,
 }));
 
-// Basic rate limiting on all /api routes
-app.use('/api', apiLimiter);
+// Keep request limits in production; local development remains unrestricted.
+if (process.env.NODE_ENV === 'production') {
+  app.use('/api', apiLimiter);
+}
 
 // Routes
 app.use('/api', routes);
