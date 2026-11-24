@@ -77,6 +77,7 @@ async function request(path, options = {}) {
   try {
     response = await fetch(`${API_URL}${path}`, {
       headers: isMultipart ? { ...(options.headers || {}) } : { "Content-Type": "application/json", ...(options.headers || {}) },
+      cache: "no-store",
       ...options,
     });
   } catch (networkError) {
@@ -106,7 +107,7 @@ async function request(path, options = {}) {
 async function requestWithMeta(path, options = {}) {
   let response;
   try {
-    response = await fetch(`${API_URL}${path}`, { headers: { "Content-Type": "application/json", ...(options.headers || {}) }, ...options });
+    response = await fetch(`${API_URL}${path}`, { headers: { "Content-Type": "application/json", ...(options.headers || {}) }, cache: "no-store", ...options });
   } catch (networkError) {
     throw new ApiError("Não foi possível conectar à API. Verifique se o servidor está rodando.");
   }
@@ -134,14 +135,14 @@ const api = {
   createProduct(payload) {
     return request(`/products`, {
       method: "POST",
-      body: JSON.stringify(payload),
+      body: typeof FormData !== "undefined" && payload instanceof FormData ? payload : JSON.stringify(payload),
     });
   },
 
   updateProduct(id, payload) {
     return request(`/products/${id}`, {
       method: "PUT",
-      body: JSON.stringify(payload),
+      body: typeof FormData !== "undefined" && payload instanceof FormData ? payload : JSON.stringify(payload),
     });
   },
 

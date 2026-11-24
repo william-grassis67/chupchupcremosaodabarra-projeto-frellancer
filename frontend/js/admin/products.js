@@ -211,7 +211,7 @@ document.addEventListener("DOMContentLoaded", () => {
 			else await api.createProduct(productPayload());
 			Admin.modal("productModal", false);
 			Admin.toast(id ? "Produto atualizado com sucesso." : "Produto criado com sucesso.");
-			refreshProducts({ reloadFeatured: true });
+			await refreshProducts({ reloadFeatured: true });
 			loadDashboard();
 		} catch (error) {
 			Admin.toast(error.message, true);
