@@ -16,6 +16,40 @@ class ApiError extends Error {
   }
 }
 
+let categoriesCache = null;
+let categoriesCacheExpiresAt = 0;
+let categoriesRequest = null;
+
+function invalidateCategoriesCache() {
+  categoriesCache = null;
+  categoriesCacheExpiresAt = 0;
+}
+
+function getCategories() {
+  if (categoriesCache && Date.now() < categoriesCacheExpiresAt) {
+    return Promise.resolve(categoriesCache);
+  }
+  if (categoriesRequest) return categoriesRequest;
+
+  categoriesRequest = request('/categories')
+    .then((data) => {
+      categoriesCache = data;
+      categoriesCacheExpiresAt = Date.now() + 10_000;
+      return data;
+    })
+    .finally(() => {
+      categoriesRequest = null;
+    });
+  return categoriesRequest;
+}
+
+function updateCategoryRequest(path, options) {
+  return request(path, options).then((data) => {
+    invalidateCategoriesCache();
+    return data;
+  });
+}
+
 /**
  * Monta uma querystring a partir de um objeto, ignorando
  * valores undefined, null ou string vazia.
@@ -117,7 +151,7 @@ const api = {
 
   // ---------- Categorias ----------
   getCategories() {
-    return request(`/categories`);
+    return getCategories();
   },
 
   getCategory(id) {
@@ -125,21 +159,21 @@ const api = {
   },
 
   createCategory(payload) {
-    return request(`/categories`, {
+    return updateCategoryRequest(`/categories`, {
       method: "POST",
       body: JSON.stringify(payload),
     });
   },
 
   updateCategory(id, payload) {
-    return request(`/categories/${id}`, {
+    return updateCategoryRequest(`/categories/${id}`, {
       method: "PUT",
       body: JSON.stringify(payload),
     });
   },
 
   deleteCategory(id) {
-    return request(`/categories/${id}`, { method: "DELETE" });
+    return updateCategoryRequest(`/categories/${id}`, { method: "DELETE" });
   },
 
   // ---------- Pedidos ----------

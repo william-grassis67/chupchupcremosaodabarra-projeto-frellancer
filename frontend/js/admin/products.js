@@ -2,6 +2,10 @@ let adminProducts = [];
 let adminFeaturedProducts = [];
 let adminCategories = [];
 let productSearchTimer = null;
+let adminCategoriesLoaded = false;
+let adminCategoriesRequest = null;
+let adminFeaturedLoaded = false;
+let productRefreshToken = 0;
 
 function productPayload() {
 	const payload = new FormData();
@@ -17,8 +21,25 @@ function productPayload() {
 }
 
 function productOptions() {
+	const selectedCategory = productFilter.value;
 	productCategory.innerHTML = `<option value="">Selecione</option>${adminCategories.map((item) => `<option value="${item.id}">${Admin.escape(item.nome)}</option>`).join("")}`;
 	productFilter.innerHTML = `<option value="">Todas as categorias</option>${adminCategories.map((item) => `<option value="${item.id}">${Admin.escape(item.nome)}</option>`).join("")}`;
+	if (adminCategories.some((item) => String(item.id) === selectedCategory)) productFilter.value = selectedCategory;
+}
+
+function loadAdminCategories(force = false) {
+	if (!force && adminCategoriesLoaded) return Promise.resolve(adminCategories);
+	if (!force && adminCategoriesRequest) return adminCategoriesRequest;
+
+	adminCategoriesRequest = api.getCategories().then((categories) => {
+		adminCategories = categories;
+		adminCategoriesLoaded = true;
+		productOptions();
+		return adminCategories;
+	}).finally(() => {
+		adminCategoriesRequest = null;
+	});
+	return adminCategoriesRequest;
 }
 
 function featuredOrder(items) {
@@ -62,17 +83,26 @@ async function getAllProducts(params) {
 	return items;
 }
 
-async function refreshProducts() {
+
+async function refreshProducts({ reloadCategories = false, reloadFeatured = false } = {}) {
+	const refreshToken = ++productRefreshToken;
 	try {
-		adminCategories = await api.getCategories();
-		productOptions();
+		await loadAdminCategories(reloadCategories);
 		const params = { search: productSearch.value.trim() };
 		const category = adminCategories.find((item) => String(item.id) === productFilter.value);
 		if (category) params.category = category.nome;
-		[adminProducts, adminFeaturedProducts] = await Promise.all([getAllProducts(params), getAllProducts({ featured: true })]);
+		const [products, featured] = await Promise.all([
+			getAllProducts(params),
+			!adminFeaturedLoaded || reloadFeatured ? getAllProducts({ featured: true }) : Promise.resolve(adminFeaturedProducts),
+		]);
+		if (refreshToken !== productRefreshToken) return;
+		adminProducts = products;
+		adminFeaturedProducts = featured;
+		adminFeaturedLoaded = true;
 		renderFeaturedOrganizer();
 		renderProducts();
 	} catch (error) {
+		if (refreshToken !== productRefreshToken) return;
 		productsTable.innerHTML = `<div class="admin-empty">${Admin.escape(error.message)}</div>`;
 		featuredProducts.innerHTML = `<div class="admin-empty">${Admin.escape(error.message)}</div>`;
 	}
@@ -83,7 +113,7 @@ async function updateFeaturedPriority(id, value) {
 	try {
 		await api.updateProduct(id, { destaque: true, ordemDestaque: priority });
 		Admin.toast("Prioridade atualizada.");
-		await refreshProducts();
+		await refreshProducts({ reloadFeatured: true });
 	} catch (error) {
 		Admin.toast(error.message, true);
 	}
@@ -98,7 +128,7 @@ async function moveFeatured(id, direction) {
 	try {
 		await Promise.all(items.map((item, index) => api.updateProduct(item.id, { destaque: true, ordemDestaque: index + 1 })));
 		Admin.toast("Ordem dos destaques atualizada.");
-		await refreshProducts();
+		await refreshProducts({ reloadFeatured: true });
 	} catch (error) {
 		Admin.toast(error.message, true);
 	}
@@ -108,7 +138,7 @@ async function removeFeatured(id) {
 	try {
 		await api.updateProduct(id, { destaque: false, ordemDestaque: 0 });
 		Admin.toast("Produto removido dos destaques.");
-		await refreshProducts();
+		await refreshProducts({ reloadFeatured: true });
 	} catch (error) {
 		Admin.toast(error.message, true);
 	}
@@ -124,8 +154,7 @@ function resetProduct() {
 
 async function editProduct(id) {
 	try {
-		adminCategories = await api.getCategories();
-		productOptions();
+		await loadAdminCategories();
 		const item = await api.getProduct(id);
 		productId.value = item.id;
 		productName.value = item.nome;
@@ -158,7 +187,12 @@ async function removeProduct(id) {
 document.addEventListener("DOMContentLoaded", () => {
 	newProduct.addEventListener("click", async () => {
 		resetProduct();
-		await refreshProducts();
+		try {
+			await loadAdminCategories();
+		} catch (error) {
+			Admin.toast(error.message, true);
+			return;
+		}
 		Admin.modal("productModal");
 	});
 	productSearch.addEventListener("input", () => {
@@ -177,7 +211,7 @@ document.addEventListener("DOMContentLoaded", () => {
 			else await api.createProduct(productPayload());
 			Admin.modal("productModal", false);
 			Admin.toast(id ? "Produto atualizado com sucesso." : "Produto criado com sucesso.");
-			refreshProducts();
+			refreshProducts({ reloadFeatured: true });
 			loadDashboard();
 		} catch (error) {
 			Admin.toast(error.message, true);
