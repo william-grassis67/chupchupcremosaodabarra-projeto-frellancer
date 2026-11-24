@@ -1,6 +1,7 @@
 let adminProducts = [];
 let adminFeaturedProducts = [];
 let adminCategories = [];
+let productSearchTimer = null;
 
 function productPayload() {
 	const payload = new FormData();
@@ -160,7 +161,10 @@ document.addEventListener("DOMContentLoaded", () => {
 		await refreshProducts();
 		Admin.modal("productModal");
 	});
-	productSearch.addEventListener("input", refreshProducts);
+	productSearch.addEventListener("input", () => {
+		clearTimeout(productSearchTimer);
+		productSearchTimer = setTimeout(refreshProducts, 350);
+	});
 	productFilter.addEventListener("change", refreshProducts);
 	reloadProducts.addEventListener("click", refreshProducts);
 	productForm.addEventListener("submit", async (event) => {

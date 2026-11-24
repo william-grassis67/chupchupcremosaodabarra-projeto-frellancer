@@ -4,7 +4,7 @@ const cors = require('cors');
 const path = require('path');
 
 const corsOptions = require('./config/cors');
-const apiLimiter = require('./config/rateLimit');
+const createApiLimiter = require('./config/rateLimit');
 const routes = require('./routes');
 const notFound = require('./middlewares/notFound');
 const errorHandler = require('./middlewares/errorHandler');
@@ -28,7 +28,10 @@ app.use('/uploads', express.static(path.join(__dirname, '../uploads'), {
 
 // Keep request limits in production; local development remains unrestricted.
 if (process.env.NODE_ENV === 'production') {
-  app.use('/api', apiLimiter);
+  app.use('/api/health', createApiLimiter());
+  app.use('/api/products', createApiLimiter());
+  app.use('/api/categories', createApiLimiter());
+  app.use('/api/orders', createApiLimiter());
 }
 
 // Routes
