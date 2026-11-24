@@ -69,8 +69,9 @@ cp .env.example .env
 | `NODE_ENV` | `development` or `production` | `development` |
 | `DATABASE_URL` | MySQL connection string used by Prisma | `mysql://root:password@localhost:3306/delivery_db` |
 | `CORS_ORIGIN` | Comma-separated list of allowed origins (`*` for any, dev only) | `http://localhost:5173` |
-| `RATE_LIMIT_WINDOW_MS` | Rate limit window in milliseconds | `900000` |
-| `RATE_LIMIT_MAX_REQUESTS` | Max requests per window per IP | `100` |
+| `TRUST_PROXY_HOPS` | Number of trusted reverse proxies before the API; match the hosting topology | `1` |
+| `RATE_LIMIT_WINDOW_MS` | Rate limit window for product/category writes and order creation | `900000` |
+| `RATE_LIMIT_MAX_REQUESTS` | Max write/order requests per window per client IP; public catalog reads are not rate limited | `100` |
 | `ADMIN_PASSWORD_HASH` | Reserved for future admin authentication (unused today) | *(empty)* |
 
 ## Database Setup

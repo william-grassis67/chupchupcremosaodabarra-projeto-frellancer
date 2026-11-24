@@ -19,10 +19,60 @@ class ApiError extends Error {
 let categoriesCache = null;
 let categoriesCacheExpiresAt = 0;
 let categoriesRequest = null;
+const productCache = new Map();
+const productRequests = new Map();
+const PRODUCT_CACHE_TTL_MS = 5_000;
+const PRODUCT_CACHE_MAX_ENTRIES = 100;
+
+function storeProductCache(path, data) {
+  const now = Date.now();
+  for (const [key, entry] of productCache) {
+    if (now >= entry.expiresAt) productCache.delete(key);
+  }
+  while (productCache.size >= PRODUCT_CACHE_MAX_ENTRIES) {
+    productCache.delete(productCache.keys().next().value);
+  }
+  productCache.set(path, { data, expiresAt: now + PRODUCT_CACHE_TTL_MS });
+}
 
 function invalidateCategoriesCache() {
   categoriesCache = null;
   categoriesCacheExpiresAt = 0;
+  categoriesRequest = null;
+}
+
+function invalidateProductsCache() {
+  productCache.clear();
+  productRequests.clear();
+}
+
+function cachedProductRequest(path, withMeta = false) {
+  const cached = productCache.get(path);
+  if (cached && Date.now() < cached.expiresAt) return Promise.resolve(cached.data);
+  if (cached) productCache.delete(path);
+
+  const inFlight = productRequests.get(path);
+  if (inFlight) return inFlight;
+
+  const requestPromise = (withMeta ? requestWithMeta(path) : request(path))
+    .then((data) => {
+      if (productRequests.get(path) === requestPromise) {
+        storeProductCache(path, data);
+      }
+      return data;
+    })
+    .finally(() => {
+      if (productRequests.get(path) === requestPromise) productRequests.delete(path);
+    });
+  productRequests.set(path, requestPromise);
+  return requestPromise;
+}
+
+function updateProductRequest(path, options) {
+  return request(path, options).then((data) => {
+    invalidateProductsCache();
+    return data;
+  });
 }
 
 function getCategories() {
@@ -31,21 +81,25 @@ function getCategories() {
   }
   if (categoriesRequest) return categoriesRequest;
 
-  categoriesRequest = request('/categories')
+  const requestPromise = request('/categories')
     .then((data) => {
-      categoriesCache = data;
-      categoriesCacheExpiresAt = Date.now() + 10_000;
+      if (categoriesRequest === requestPromise) {
+        categoriesCache = data;
+        categoriesCacheExpiresAt = Date.now() + 10_000;
+      }
       return data;
     })
     .finally(() => {
-      categoriesRequest = null;
+      if (categoriesRequest === requestPromise) categoriesRequest = null;
     });
-  return categoriesRequest;
+  categoriesRequest = requestPromise;
+  return requestPromise;
 }
 
 function updateCategoryRequest(path, options) {
   return request(path, options).then((data) => {
     invalidateCategoriesCache();
+    invalidateProductsCache();
     return data;
   });
 }
@@ -121,33 +175,33 @@ async function requestWithMeta(path, options = {}) {
 const api = {
   // ---------- Produtos ----------
   getProducts(params = {}) {
-    return request(`/products${buildQueryString(params)}`);
+    return cachedProductRequest(`/products${buildQueryString(params)}`);
   },
 
   getProductsPage(params = {}) {
-    return requestWithMeta(`/products${buildQueryString(params)}`);
+    return cachedProductRequest(`/products${buildQueryString(params)}`, true);
   },
 
   getProduct(id) {
-    return request(`/products/${id}`);
+    return cachedProductRequest(`/products/${id}`);
   },
 
   createProduct(payload) {
-    return request(`/products`, {
+    return updateProductRequest(`/products`, {
       method: "POST",
       body: typeof FormData !== "undefined" && payload instanceof FormData ? payload : JSON.stringify(payload),
     });
   },
 
   updateProduct(id, payload) {
-    return request(`/products/${id}`, {
+    return updateProductRequest(`/products/${id}`, {
       method: "PUT",
       body: typeof FormData !== "undefined" && payload instanceof FormData ? payload : JSON.stringify(payload),
     });
   },
 
   deleteProduct(id) {
-    return request(`/products/${id}`, { method: "DELETE" });
+    return updateProductRequest(`/products/${id}`, { method: "DELETE" });
   },
 
   // ---------- Categorias ----------

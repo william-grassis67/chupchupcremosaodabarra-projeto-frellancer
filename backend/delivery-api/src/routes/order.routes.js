@@ -2,6 +2,7 @@ const express = require('express');
 const controller = require('../controllers/order.controller');
 const validate = require('../middlewares/validate');
 const adminAuth = require('../middlewares/adminAuth');
+const createApiLimiter = require('../config/rateLimit');
 const {
   createOrderRules,
   updateStatusRules,
@@ -9,9 +10,10 @@ const {
 } = require('../validators/order.validator');
 
 const router = express.Router();
+const orderCreationLimiter = createApiLimiter();
 
 // Public route: customers submit their order from the frontend cart
-router.post('/', createOrderRules, validate, controller.create);
+router.post('/', orderCreationLimiter, createOrderRules, validate, controller.create);
 
 // Management routes (adminAuth is currently a no-op, see middlewares/adminAuth.js)
 router.get('/', adminAuth, controller.getAll);

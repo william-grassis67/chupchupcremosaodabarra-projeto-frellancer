@@ -4,13 +4,18 @@ const cors = require('cors');
 const path = require('path');
 
 const corsOptions = require('./config/cors');
-const createApiLimiter = require('./config/rateLimit');
 const routes = require('./routes');
 const notFound = require('./middlewares/notFound');
 const errorHandler = require('./middlewares/errorHandler');
 
 const app = express();
-app.set('trust proxy', 1);
+const trustProxyHops = process.env.TRUST_PROXY_HOPS === undefined
+  ? 1
+  : Number(process.env.TRUST_PROXY_HOPS);
+if (!Number.isInteger(trustProxyHops) || trustProxyHops < 0) {
+  throw new Error('TRUST_PROXY_HOPS must be a non-negative integer');
+}
+app.set('trust proxy', trustProxyHops);
 
 // Security headers
 app.use(helmet());
@@ -25,14 +30,6 @@ app.use('/uploads', express.static(path.join(__dirname, '../uploads'), {
   maxAge: '1d',
   index: false,
 }));
-
-// Keep request limits in production; local development remains unrestricted.
-if (process.env.NODE_ENV === 'production') {
-  app.use('/api/health', createApiLimiter());
-  app.use('/api/products', createApiLimiter());
-  app.use('/api/categories', createApiLimiter());
-  app.use('/api/orders', createApiLimiter());
-}
 
 // Routes
 app.use('/api', routes);
