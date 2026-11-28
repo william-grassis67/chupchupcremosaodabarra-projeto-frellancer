@@ -85,7 +85,7 @@ const CartUI = (function () {
         </div>
       </div>
       <div class="cart-item-remove">
-        <span class="cart-item-subtotal">${formatPrice(item.price * item.quantity)}</span>
+        <span class="cart-item-subtotal">${formatPrice(item.subtotal)}</span>
         <button type="button" class="remove-btn">Remover</button>
       </div>
     `;

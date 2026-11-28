@@ -10,8 +10,22 @@ const Cart = (function () {
   function load() {
     try {
       const raw = localStorage.getItem(CART_STORAGE_KEY);
-      items = raw ? JSON.parse(raw) : [];
-      if (!Array.isArray(items)) items = [];
+      const storedItems = raw ? JSON.parse(raw) : [];
+      items = Array.isArray(storedItems)
+        ? storedItems.filter((item) => {
+          const productId = Number(item?.productId);
+          const quantity = Number(item?.quantity);
+          return Number.isInteger(productId) && productId > 0
+            && Number.isInteger(quantity) && quantity > 0
+            && typeof item.name === "string"
+            && Number.isFinite(toCents(item.price)) && toCents(item.price) > 0;
+        }).map((item) => ({
+          ...item,
+          productId: Number(item.productId),
+          quantity: Number(item.quantity),
+          price: toCents(item.price) / 100,
+        }))
+        : [];
     } catch (err) {
       items = [];
     }
@@ -36,7 +50,14 @@ const Cart = (function () {
   }
 
   function getItems() {
-    return items.slice();
+    return items.map((item) => {
+      const priceCents = toCents(item.price);
+      return {
+        ...item,
+        price: priceCents / 100,
+        subtotal: (priceCents * item.quantity) / 100,
+      };
+    });
   }
 
   function findIndex(productId) {
@@ -52,6 +73,9 @@ const Cart = (function () {
 
     const index = findIndex(product.id);
     if (index >= 0) {
+      items[index].name = product.name;
+      items[index].price = product.price;
+      items[index].image = product.image;
       items[index].quantity += quantity;
     } else {
       items.push({
@@ -63,6 +87,27 @@ const Cart = (function () {
       });
     }
     persist();
+  }
+
+  function syncProducts(products) {
+    const productsById = new Map(products.map((product) => [String(product.id), product]));
+    let changed = false;
+
+    items.forEach((item) => {
+      const product = productsById.get(String(item.productId));
+      if (!product) return;
+      const price = Number(product.price);
+      if (!Number.isFinite(price) || price < 0) return;
+      const image = product.image ?? item.image;
+      if (item.name !== product.name || toCents(item.price) !== toCents(price) || item.image !== image) {
+        item.name = product.name;
+        item.price = price;
+        item.image = image;
+        changed = true;
+      }
+    });
+
+    if (changed) persist();
   }
 
   function increment(productId) {
@@ -98,7 +143,9 @@ const Cart = (function () {
   }
 
   function toCents(value) {
-    return Math.round(Number(value) * 100);
+    const match = /^\s*(\d+)(?:[.,](\d{1,2}))?\s*$/.exec(String(value));
+    if (!match) return NaN;
+    return Number(match[1]) * 100 + Number((match[2] || "").padEnd(2, "0") || 0);
   }
 
   function getSubtotal() {
@@ -110,14 +157,7 @@ const Cart = (function () {
   }
 
   function getDeliveryFee(neighborhood) {
-    if (items.length === 0) return 0;
-    const subtotal = getSubtotal();
-    if (hasFixedDeliveryFee(neighborhood)) {
-      return getNeighborhoodDeliveryFee(neighborhood);
-    }
-    return subtotal > 24 && subtotal < 35
-      ? getNeighborhoodDeliveryFee(neighborhood)
-      : 0;
+    return 0;
   }
 
   function getTotal(neighborhood) {
@@ -144,6 +184,7 @@ const Cart = (function () {
     onChange,
     getItems,
     addItem,
+    syncProducts,
     increment,
     decrement,
     removeItem,

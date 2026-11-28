@@ -112,6 +112,8 @@ npm start
 
 The API will be available at `http://localhost:PORT`. Check `GET /api/health` to confirm it's running.
 
+Run the automated monetary and cart tests with `npm test`. The suite covers current prices, item quantities, multiple products, delivery fees, and synchronization of legacy `localStorage` cart entries.
+
 ## Project Structure
 
 ```text
@@ -162,6 +164,7 @@ README.md
 
 | Method | Endpoint | Description |
 |---|---|---|
+| POST | `/api/orders/quote` | Quote current product prices and delivery fee without creating an order (public) |
 | POST | `/api/orders` | Create an order from a cart (public) |
 | GET | `/api/orders` | List orders. Supports `?status=`, `?page=`, `?limit=` (management) |
 | GET | `/api/orders/:id` | Get a single order (management) |
@@ -224,6 +227,8 @@ GET /api/products?category=hamburgers&available=true&search=cheese&page=1&limit=
 `POST /api/orders`
 
 The client only sends **which products and quantities** were selected — the API looks up current prices and names itself and ignores any price sent by the client.
+
+Before finalizing, the frontend can request a current quote with `POST /api/orders/quote`, sending the selected neighborhood and product IDs/quantities. The response includes authoritative line subtotals, product subtotal, delivery fee, and total; the quote does not create an order.
 
 ```json
 {

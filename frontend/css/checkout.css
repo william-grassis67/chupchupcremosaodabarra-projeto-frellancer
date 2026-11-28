@@ -54,6 +54,13 @@
   margin-bottom: var(--space-4);
 }
 
+.free-delivery-message {
+  margin-block: var(--space-3);
+  color: var(--color-success);
+  font-size: var(--fs-sm);
+  font-weight: 700;
+}
+
 .summary-item {
   display: flex;
   justify-content: space-between;
@@ -105,10 +112,12 @@
   .checkout-layout {
     grid-template-columns: 1fr;
   }
+
   .checkout-summary {
     position: static;
     order: -1;
   }
+
   .field-row {
     grid-template-columns: 1fr;
   }

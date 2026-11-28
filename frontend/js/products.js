@@ -116,8 +116,8 @@ const Products = (function () {
     const mediaBadge = product.featured
       ? `<span class="badge badge-featured">Destaque</span>`
       : !product.available
-      ? `<span class="badge badge-unavailable">Indisponível</span>`
-      : "";
+        ? `<span class="badge badge-unavailable">Indisponível</span>`
+        : "";
 
     card.innerHTML = `
       <div class="product-media">
@@ -244,7 +244,9 @@ const Products = (function () {
       if (token !== requestToken) return; // resposta obsoleta, ignore
 
       totalPages = 1;
-      renderProducts(list.map(normalize));
+      const products = list.map(normalize);
+      Cart.syncProducts(products);
+      renderProducts(products);
       renderPagination();
     } catch (err) {
       if (token !== requestToken) return;

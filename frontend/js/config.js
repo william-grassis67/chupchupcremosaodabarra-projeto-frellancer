@@ -22,69 +22,6 @@ const MIN_ORDER_VALUE_CENTS = 2400;
 // Tempo (ms) de debounce da busca de produtos.
 const SEARCH_DEBOUNCE_MS = 400;
 
-// Bairros aceitos pela API e suas taxas na faixa de entrega aplicável.
-const DELIVERY_FEES = Object.freeze({
-  "Antonio Lopez": 4,
-  Areal: 2,
-  Bugia: 2,
-  Centro: 2,
-  "Chácara do Atlântico": 2,
-  Coabh: 2,
-  "Coabh 2": 2,
-  Favica: 2,
-  Floresta: 2,
-  Guaxindimba: 2,
-  "Marcilio Dias 1": 2,
-  "Marcilio Dias 2": 2,
-  "Nossa Senhora Aparecida": 2,
-  "Nova Bethânia": 2,
-  Quilombo: 4,
-  "Novo Santana": 4,
-  "Quilombo Novo": 4,
-  Santana: 4,
-  Santiago: 2,
-  "Santo Amaro": 2,
-  "São Jose": 2,
-  Urbens: 2,
-  "Vila dos Pescadores": 2,
-  "Maria Manteiga": 4,
-  "Nova Esperança": 4,
-  "Novo Horizonte": 4,
-});
-
-const FIXED_DELIVERY_NEIGHBORHOODS = Object.freeze([
-  "Quilombo",
-  "Novo Santana",
-  "Maria Manteiga",
-  "Nova Esperança",
-  "Novo Horizonte",
-  "Antonio Lopez",
-]);
-
-function normalizeNeighborhoodName(value) {
-  return String(value ?? "")
-    .normalize("NFD")
-    .replace(/[\u0300-\u036f]/g, "")
-    .trim()
-    .replace(/\s+/g, " ")
-    .toLocaleLowerCase("pt-BR");
-}
-
-function getNeighborhoodDeliveryFee(neighborhood) {
-  const normalized = normalizeNeighborhoodName(neighborhood);
-  const match = Object.keys(DELIVERY_FEES).find(
-    (name) => normalizeNeighborhoodName(name) === normalized
-  );
-  return match ? DELIVERY_FEES[match] : 0;
-}
-
-function hasFixedDeliveryFee(neighborhood) {
-  const normalized = normalizeNeighborhoodName(neighborhood);
-  return FIXED_DELIVERY_NEIGHBORHOODS.some(
-    (name) => normalizeNeighborhoodName(name) === normalized
-  );
-}
-
 // Opções de forma de pagamento aceitas.
 // Ajuste os "value" para bater exatamente com o que o backend espera.
 const PAYMENT_METHODS = [

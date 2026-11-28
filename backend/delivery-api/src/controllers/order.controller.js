@@ -7,6 +7,11 @@ const create = catchAsync(async (req, res) => {
   return success(res, order, 201);
 });
 
+const quote = catchAsync(async (req, res) => {
+  const pricing = await orderService.quoteOrder(req.body);
+  return success(res, pricing);
+});
+
 const getAll = catchAsync(async (req, res) => {
   const { status, page, limit } = req.query;
   const { items, meta } = await orderService.listOrders({ status, page, limit });
@@ -28,4 +33,4 @@ const remove = catchAsync(async (req, res) => {
   return success(res, { message: 'Order deleted successfully' });
 });
 
-module.exports = { create, getAll, getById, updateStatus, remove };
+module.exports = { create, quote, getAll, getById, updateStatus, remove };

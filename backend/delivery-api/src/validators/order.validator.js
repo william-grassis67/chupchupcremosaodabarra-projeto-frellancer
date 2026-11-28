@@ -45,8 +45,8 @@ const createOrderRules = [
   body('numero').trim().notEmpty().withMessage('numero is required').isLength({ max: 20 }),
   body('complemento').optional({ nullable: true }).isString().isLength({ max: 100 }),
   body('bairro')
+    .optional({ checkFalsy: true })
     .trim()
-    .notEmpty().withMessage('bairro is required')
     .customSanitizer((value) => VALID_NEIGHBORHOODS.find(
       (neighborhood) => normalizeNeighborhood(neighborhood) === normalizeNeighborhood(value),
     ) || value)
@@ -66,6 +66,19 @@ const createOrderRules = [
     .isInt({ gt: 0 }).withMessage('quantidade must be a positive integer'),
 ];
 
+const quoteOrderRules = [
+  body('bairro')
+    .trim()
+    .notEmpty().withMessage('bairro is required')
+    .customSanitizer((value) => VALID_NEIGHBORHOODS.find(
+      (neighborhood) => normalizeNeighborhood(neighborhood) === normalizeNeighborhood(value),
+    ) || value)
+    .isIn(VALID_NEIGHBORHOODS).withMessage('bairro is not available for delivery'),
+  body('itens').isArray({ min: 1, max: 100 }).withMessage('itens must contain between 1 and 100 products'),
+  body('itens.*.produtoId').notEmpty().isInt({ gt: 0 }).withMessage('produtoId must be a positive integer'),
+  body('itens.*.quantidade').notEmpty().isInt({ gt: 0 }).withMessage('quantidade must be a positive integer'),
+];
+
 const updateStatusRules = [
   param('id').isInt({ gt: 0 }).withMessage('id must be a positive integer'),
   body('status')
@@ -77,6 +90,7 @@ const idParamRule = [param('id').isInt({ gt: 0 }).withMessage('id must be a posi
 
 module.exports = {
   createOrderRules,
+  quoteOrderRules,
   updateStatusRules,
   idParamRule,
   VALID_STATUSES,

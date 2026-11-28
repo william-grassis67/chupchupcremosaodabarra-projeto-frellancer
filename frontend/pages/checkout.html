@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -8,7 +9,9 @@
   <link rel="icon" href="../assets/images/logo.jpg" type="image/jpeg" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Manrope:wght@400;500;600;700;800&display=swap"
+    rel="stylesheet" />
 
   <link rel="stylesheet" href="../css/variables.css" />
   <link rel="stylesheet" href="../css/reset.css" />
@@ -16,6 +19,7 @@
   <link rel="stylesheet" href="../css/checkout.css" />
   <link rel="stylesheet" href="../css/responsive.css" />
 </head>
+
 <body>
   <header class="checkout-header">
     <div class="container">
@@ -120,14 +124,16 @@
           <legend>Observações</legend>
           <div class="field" data-field="notes">
             <label for="notes">Observação para localização</label>
-            <textarea id="notes" name="notes" class="textarea-obs" placeholder="Informe um ponto de referência para facilitar a localização da entrega."></textarea>
+            <textarea id="notes" name="notes" class="textarea-obs"
+              placeholder="Informe um ponto de referência para facilitar a localização da entrega."></textarea>
             <span class="error-msg"></span>
           </div>
         </fieldset>
 
         <div class="submit-error" id="submitError" role="alert"></div>
 
-        <button type="submit" class="btn btn-primary btn-block" id="submitOrderBtn">Finalizar pedido pelo WhatsApp</button>
+        <button type="submit" class="btn btn-primary btn-block" id="submitOrderBtn">Finalizar pedido pelo
+          WhatsApp</button>
       </form>
 
       <aside class="checkout-summary">
@@ -141,6 +147,8 @@
           <span>Entrega</span>
           <span id="summaryDelivery">R$ 0,00</span>
         </div>
+        <p class="free-delivery-message" id="freeDeliveryMessage" role="status" hidden>Parabéns! Você ganhou entrega
+          grátis.</p>
         <div class="cart-summary-row is-total">
           <span>Total</span>
           <span id="summaryTotal">R$ 0,00</span>
@@ -159,4 +167,5 @@
   <script src="../js/checkout.js"></script>
   <script src="../js/main.js"></script>
 </body>
+
 </html>

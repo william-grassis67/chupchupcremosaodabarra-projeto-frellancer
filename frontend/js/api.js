@@ -239,6 +239,13 @@ const api = {
     });
   },
 
+  quoteOrder(payload) {
+    return request(`/orders/quote`, {
+      method: "POST",
+      body: JSON.stringify(payload),
+    });
+  },
+
   getOrders(params = {}) {
     return request(`/orders${buildQueryString(params)}`);
   },
